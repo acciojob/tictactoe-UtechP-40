@@ -1,1 +1,45 @@
 /*  your css code here. If applicable */
+.users{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    div{
+        margin-bottom: 20px;
+    }
+    input{
+        width: 300px;
+        height: 30px;
+        /* width: ; */
+        /* height: ; */
+    }
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#submit{
+    background: none;
+    width: 250px;
+    height: 40px;
+}
+
+.game{
+    display: grid;
+    grid-template-columns: repeat(3,170px);
+}
+
+.tac1,.tac2,.tac3{
+    height: 170px;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+.container{
+    display: none;
+}
