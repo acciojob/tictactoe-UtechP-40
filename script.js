@@ -8,41 +8,41 @@ let message = document.querySelector(".message");
 let btn = document.querySelector("#submit");
 let player1;
 let player2;
+let currentPlayer;
 
 btn.addEventListener("click", (e) => {
   e.preventDefault();
-  player1 = document.querySelector("#player1").value;
-  player2 = document.querySelector("#player2").value;
+  player1 = document.querySelector("#player1").value || "Player 1";
+  player2 = document.querySelector("#player2").value || "Player 2";
+  currentPlayer = player1;
+
   document.querySelector(".users").style.display = "none";
   document.querySelector(".container").style.display = "block";
+  message.innerText = `${currentPlayer}, you're up`;
 });
 
-let i = 1;
-for (let board1 of board) {
-  for (let box of board1) {
+let moveCount = 1;
+for (let boardRow of board) {
+  for (let box of boardRow) {
     box.addEventListener("click", () => {
-      if (box.innerText == "") {
-        if (i % 2 !== 0) {
-          message.innerText = `${player1}, you're up`;
+      if (box.innerText === "") {
+        if (moveCount % 2 !== 0) {
           box.innerText = "X";
           if (checkWin("X")) {
             message.innerText = `${player1}, congratulations you won!`;
-            disableBoard();
+            return;
           }
-        }
-        if (i % 2 === 0) {
-          message.innerText = `${player2}, you're up`;
+          currentPlayer = player2;
+        } else {
           box.innerText = "O";
           if (checkWin("O")) {
             message.innerText = `${player2}, congratulations you won!`;
-            disableBoard();
+            return;
           }
+          currentPlayer = player1;
         }
-        i++;
-        if (i === 10 && !checkWin("X") && !checkWin("O")) {
-          message.innerText = "It's a draw!";
-          disableBoard();
-        }
+        message.innerText = `${currentPlayer}, you're up`;
+        moveCount++;
       }
     });
   }
@@ -50,11 +50,11 @@ for (let board1 of board) {
 
 function checkWin(player) {
   let n = board.length;
-  for (let i = 0; i < board.length; i++) {
+  for (let i = 0; i < n; i++) {
     let countRows = 0;
     let countColumns = 0;
 
-    for (let j = 0; j < board.length; j++) {
+    for (let j = 0; j < n; j++) {
       if (board[i][j].innerText == player) {
         countRows++;
       }
@@ -62,36 +62,26 @@ function checkWin(player) {
         countColumns++;
       }
     }
-    if (countRows == 3 || countColumns == 3) {
+
+    if (countRows === 3 || countColumns === 3) {
       return true;
     }
   }
 
-  let countDiagonals = 0;
+  let countDiagonals1 = 0;
+  let countDiagonals2 = 0;
   for (let i = 0; i < n; i++) {
     if (board[i][i].innerText == player) {
-      countDiagonals++;
+      countDiagonals1++;
     }
-  }
-  if (countDiagonals == 3) {
-    return true;
-  }
-  countDiagonals = 0;
-  for (let i = 0; i < n; i++) {
     if (board[i][n - 1 - i].innerText == player) {
-      countDiagonals++;
+      countDiagonals2++;
     }
   }
-  if (countDiagonals == 3) {
+
+  if (countDiagonals1 === 3 || countDiagonals2 === 3) {
     return true;
   }
-  return false;
-}
 
-function disableBoard() {
-  for (let row of board) {
-    for (let box of row) {
-      box.style.pointerEvents = "none";
-    }
-  }
+  return false;
 }
