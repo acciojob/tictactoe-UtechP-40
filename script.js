@@ -1,87 +1,78 @@
-let row1 = document.querySelectorAll(".tac1");
-let row2 = document.querySelectorAll(".tac2");
-let row3 = document.querySelectorAll(".tac3");
+const submitButton = document.getElementById('submit');
+        const player1Input = document.getElementById('player1');
+        const player2Input = document.getElementById('player2');
+        const messageDiv = document.querySelector('.message');
+        const boardDiv = document.querySelector('.board');
+        let currentPlayer = 'x'; // Player 1 starts
+        let gameActive = true;
+        let gameState = ["", "", "", "", "", "", "", "", ""];
+        let player1 = '';
+        let player2 = '';
 
-let board = [row1, row2, row3];
-let message = document.querySelector(".message");
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
 
-let btn = document.querySelector("#submit");
-let player1;
-let player2;
-let currentPlayer;
+        submitButton.addEventListener('click', () => {
+            player1 = player1Input.value;
+            player2 = player2Input.value;
+            if (!player1 || !player2) {
+                alert('Please enter names for both players!');
+                return;
+            }
+            messageDiv.innerText = `${player1}, you're up!`;
+            boardDiv.classList.remove('hidden');
+            document.querySelector('.setup').classList.add('hidden');
+        });
 
-btn.addEventListener("click", (e) => {
-  e.preventDefault();
-  player1 = document.querySelector("#player1").value || "Player 1";
-  player2 = document.querySelector("#player2").value || "Player 2";
-  currentPlayer = player1;
+        document.querySelectorAll('.cell').forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
 
-  document.querySelector(".users").style.display = "none";
-  document.querySelector(".container").style.display = "block";
-  message.innerText = `${currentPlayer}, you're up`;
-});
+        function handleCellClick(event) {
+            const clickedCell = event.target;
+            const clickedCellIndex = parseInt(clickedCell.id) - 1;
 
-let moveCount = 1;
-for (let boardRow of board) {
-  for (let box of boardRow) {
-    box.addEventListener("click", () => {
-      if (box.innerText === "") {
-        if (moveCount % 2 !== 0) {
-          box.innerText = "X";
-          if (checkWin("X")) {
-            message.innerText = `${player1}, congratulations you won!`;
-            return;
-          }
-          currentPlayer = player2;
-        } else {
-          box.innerText = "O";
-          if (checkWin("O")) {
-            message.innerText = `${player2}, congratulations you won!`;
-            return;
-          }
-          currentPlayer = player1;
+            if (gameState[clickedCellIndex] !== "" || !gameActive) {
+                return;
+            }
+
+            gameState[clickedCellIndex] = currentPlayer;
+            clickedCell.innerText = currentPlayer;
+
+            checkWinner();
         }
-        message.innerText = `${currentPlayer}, you're up`;
-        moveCount++;
-      }
-    });
-  }
-}
 
-function checkWin(player) {
-  let n = board.length;
-  for (let i = 0; i < n; i++) {
-    let countRows = 0;
-    let countColumns = 0;
+        function checkWinner() {
+            let roundWon = false;
+            for (let i = 0; i < winningConditions.length; i++) {
+                const winCondition = winningConditions[i];
+                let a = gameState[winCondition[0]];
+                let b = gameState[winCondition[1]];
+                let c = gameState[winCondition[2]];
+                if (a === '' || b === '' || c === '') {
+                    continue;
+                }
+                if (a === b && b === c) {
+                    roundWon = true;
+                    break;
+                }
+            }
 
-    for (let j = 0; j < n; j++) {
-      if (board[i][j].innerText == player) {
-        countRows++;
-      }
-      if (board[j][i].innerText == player) {
-        countColumns++;
-      }
-    }
+            if (roundWon) {
+                messageDiv.innerText = `${currentPlayer === 'x' ? player1 : player2} congratulations you won!`;
+                gameActive = false;
+                return;
+            }
 
-    if (countRows === 3 || countColumns === 3) {
-      return true;
-    }
-  }
+            if (!gameState.includes("")) {
+                messageDiv.innerText = "It's a tie!";
+                gameActive = false;
+                return;
+            }
 
-  let countDiagonals1 = 0;
-  let countDiagonals2 = 0;
-  for (let i = 0; i < n; i++) {
-    if (board[i][i].innerText == player) {
-      countDiagonals1++;
-    }
-    if (board[i][n - 1 - i].innerText == player) {
-      countDiagonals2++;
-    }
-  }
-
-  if (countDiagonals1 === 3 || countDiagonals2 === 3) {
-    return true;
-  }
-
-  return false;
-}
+            currentPlayer = currentPlayer === 'x' ? 'o' : 'x';
+            messageDiv.innerText = `${currentPlayer === 'x' ? player1 : player2}, you're up!`;
+        }

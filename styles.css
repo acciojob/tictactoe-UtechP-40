@@ -1,45 +1,37 @@
-/*  your css code here. If applicable */
-.users{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    div{
-        margin-bottom: 20px;
-    }
-    input{
-        width: 300px;
-        height: 30px;
-        /* width: ; */
-        /* height: ; */
-    }
-}
-
-body{
+body {
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-}
-#submit{
-    background: none;
-    width: 250px;
-    height: 40px;
 }
 
-.game{
+.container {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.board {
     display: grid;
-    grid-template-columns: repeat(3,170px);
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
 }
 
-.tac1,.tac2,.tac3{
-    height: 170px;
-    border: 2px solid black;
+.cell {
+    width: 100px;
+    height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2rem;
+    background-color: #480707;
+    font-size: 2em;
+    cursor: pointer;
 }
-.container{
+
+.message {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+
+.hidden {
     display: none;
 }
